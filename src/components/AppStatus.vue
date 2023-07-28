@@ -1,18 +1,16 @@
 <template>
-  <span :class="['badge', typeProps]">{{ statusprops }}</span>
+  <span :class="['badge', taskProp.type]">{{ taskProp.status }}</span>
 </template>
 <script>
 import { ref } from "vue";
 
 export default {
-  props: ["type", "status"],
+  props: ["task"],
   setup(props) {
-    const typeProps = ref(props.type);
-    const statusprops = ref(props.status);
+    const taskProp = ref(props.task);
 
     return {
-      typeProps,
-      statusprops,
+      taskProp,
     };
   },
 };

@@ -1,19 +1,19 @@
 <template>
-  <div class="card" v-if="id">
-    <h2>Название задачи {{ task.title }}</h2>
+  <div class="card" v-if="findTask">
+    <h2>{{ task.title }}</h2>
     <p>
       <strong>Статус</strong>:
-      <AppStatus :status="task.status" :type="task.type" />
+      <AppStatus :task="task" />
     </p>
     <p>
-      <strong>Дэдлайн</strong>: {{ new Date().toLocaleDateString() }}
+      <strong>Дэдлайн</strong>:
       {{ task.data }}
     </p>
-    <p><strong>Описание</strong>: Описание задачи {{ task.body }}</p>
+    <p><strong>Описание</strong>: {{ task.description }}</p>
     <div>
       <button class="btn" @click="workTask">Взять в работу</button>
-      <button class="btn primary">Завершить</button>
-      <button class="btn danger">Отменить</button>
+      <button class="btn primary" @click="completeTask">Завершить</button>
+      <button class="btn danger" @click="stopTask">Отменить</button>
     </div>
   </div>
   <h3 class="text-white center" v-else>
@@ -22,13 +22,9 @@
 </template>
 
 <script>
-// btn "взять в работу" динамически меняет статус на "выполняется" без перехода на главную
-// кнопка "завершить" меняет статус на "выполнонено" без перехода
-// кнопка "отменить" меняет статус на "отмененая" без перехода на главную
-// при переходе на страницу с неправильным ID показвать сообщение  h3 teg сделать через coptuted дин
 import AppStatus from "../components/AppStatus";
 import { useStore } from "vuex";
-import { reactive, ref, watchEffect } from "vue";
+import { reactive, ref } from "vue";
 
 export default {
   components: { AppStatus },
@@ -37,17 +33,28 @@ export default {
     const store = useStore();
     const task = reactive(store.state.task);
     const id = ref(props.taskId);
-    watchEffect(() => {});
+
+    const findTask = ref(store.getters.notTask(id.value));
+
     const workTask = () => {
-      // console.log(task),
       store.commit("taskWork");
-      // console.log(task.status);
-      // console.log(id.value);
     };
+
+    const completeTask = () => {
+      store.commit("completeTask");
+    };
+
+    const stopTask = () => {
+      store.commit("stopTask");
+    };
+
     return {
       task,
-      workTask,
       id,
+      workTask,
+      completeTask,
+      stopTask,
+      findTask,
     };
   },
 };

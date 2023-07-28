@@ -5,24 +5,11 @@
       <li v-for="task in tasks" :key="task.id">
         <div class="card">
           <h2 class="card-title">
-            Название задачи {{ task.title }}
-            <app-status
-              :type="task.type"
-              :status="task.status"
-              :key="task.id"
-            />
+            {{ task.title }}
+            <app-status :task="task" />
           </h2>
-          <p>
-            <strong>
-              <small>
-                {{ new Date().toLocaleDateString() }} {{ task.data }}
-              </small>
-            </strong>
-          </p>
-          <router-link
-            :to="'/task/' + task.id"
-            @click="$store.commit('thisTask', task.id)"
-          >
+          <p><strong>Выполнить до:</strong> {{ task.data }}</p>
+          <router-link :to="'/task/' + task.id" @click="findTask(task.id)">
             <button class="btn primary">Посмотреть</button>
           </router-link>
         </div>
@@ -36,19 +23,22 @@
 <script>
 // сделать фильтрацию по разным статусам
 import AppStatus from "../components/AppStatus";
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { useStore } from "vuex";
 
 export default {
   components: { AppStatus },
   setup() {
     const store = useStore();
-    const tasks = reactive(store.getters.tasks);
+    const tasks = ref(store.getters.tasks);
     const taskActive = ref(store.getters.taskFilter);
-
+    const findTask = (id) => {
+      store.commit("thisTask", id);
+    };
     return {
       tasks,
       taskActive,
+      findTask,
     };
   },
 };
