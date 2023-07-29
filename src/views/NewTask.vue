@@ -46,8 +46,6 @@ export default {
       if (new Date() < new Date(data.value)) {
         status.value = "активна";
         type.value = "primary";
-
-        console.log(status.value, type.value);
       } else {
         status.value = "отменена";
         type.value = "danger";

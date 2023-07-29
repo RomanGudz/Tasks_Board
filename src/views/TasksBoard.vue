@@ -23,7 +23,7 @@
 <script>
 // сделать фильтрацию по разным статусам
 import AppStatus from "../components/AppStatus";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -31,7 +31,14 @@ export default {
   setup() {
     const store = useStore();
     const tasks = ref(store.getters.tasks);
-    const taskActive = ref(store.getters.taskFilter);
+    const taskActive = computed(() => {
+      if (tasks.value !== null) {
+        return tasks.value.filter((item) => item.type === "primary").length;
+      } else {
+        return false;
+      }
+    });
+
     const findTask = (id) => {
       store.commit("thisTask", id);
     };
